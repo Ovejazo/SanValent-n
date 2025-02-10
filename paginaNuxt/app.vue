@@ -1,9 +1,6 @@
 <template>
   <div class="container">
-    <div>
-      <Sunflower />
-    </div>
-    <h1>Hola como estas</h1>
+    <Sunflower />
   </div>
 </template>
 
@@ -17,6 +14,7 @@ import Sunflower from '@/components/Sunflower.vue'
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #87CEEB; /* Color de cielo */
+  background-color: #87CEEB;
+  padding: 2rem;
 }
 </style>
