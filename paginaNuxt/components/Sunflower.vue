@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="text-block">
-      <h1>Mi Girasol</h1>
+      <h1>Mi Wawalona</h1>
       <h3>Hice este girasol pensando en ti, pensando en tus gustos y en tu carita linda hermosa.</h3>
     <NuxtLink to="/caca" class="link-button">
         Nuevamente presiona aquí

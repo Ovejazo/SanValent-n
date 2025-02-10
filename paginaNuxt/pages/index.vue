@@ -1,9 +1,8 @@
 <template>
   <div class="mensaje-container">
-    <h1>¡Mensaje Especial! 💝</h1>
+    <h1>💝🐻 ¡Holaaaa hermosa cara de osa! 🐻💝</h1>
     <div class="mensaje-content">
       <p>Este es un mensaje muy especial...</p>
-      <!-- Aquí puedes agregar el contenido que desees mostrar en la nueva página -->
     <NuxtLink to="/mensaje" class="link-button">
         Presiona aquí ^^
     </NuxtLink>
