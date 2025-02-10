@@ -4,6 +4,9 @@
     <div class="mensaje-content">
       <p>Este es un mensaje muy especial...</p>
       <!-- Aquí puedes agregar el contenido que desees mostrar en la nueva página -->
+    <NuxtLink to="/mensaje" class="link-button">
+        Presiona aquí ^^
+    </NuxtLink>
     </div>
   </div>
 </template>

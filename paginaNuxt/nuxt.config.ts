@@ -1,6 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
-  pages: true,
+  // Habilitar explícitamente las páginas
+  experimental: {
+    payloadExtraction: false
+  },
+
+  // Asegurarnos que el router está habilitado
+  router: {
+    options: {
+      strict: false
+    }
+  },
+
+  compatibilityDate: "2025-02-10"
 })
