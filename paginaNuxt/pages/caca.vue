@@ -1,6 +1,6 @@
 <template>
   <div class="caca-container" ref="cacaContainer">
-    <h1>Página Caca</h1>
+    <h1>Caca</h1>
     <div class="caca-content">
       <img src="/images/oso.jpg" alt="Oso" class="oso-image" />
       <p class="question">¿Quieres ser mi San Valentín?</p>
@@ -12,6 +12,7 @@
     <NuxtLink to="/" class="back-button">
       Volver a inicio
     </NuxtLink>
+    <div class="heart-container" ref="heartContainer"></div> <!-- Asegúrate de que este div esté aquí -->
   </div>
 </template>
 
@@ -23,6 +24,7 @@ const growlAudioURL = 'https://www.soundjay.com/animal/grizzly-bear-growl-01.mp3
 const growlAudio = new Audio(growlAudioURL)
 
 const cacaContainer = ref(null)
+const heartContainer = ref(null)
 
 const handleNoClick = () => {
   growlAudio.play()
@@ -37,21 +39,16 @@ const handleSiClick = () => {
 }
 
 const createHearts = () => {
-  const heartContainer = document.createElement('div')
-  heartContainer.classList.add('heart-container')
-
   for (let i = 0; i < 30; i++) {
     const heart = document.createElement('div')
     heart.classList.add('heart')
     heart.style.left = `${Math.random() * 100}%`
     heart.style.animationDelay = `${Math.random() * 2}s`
-    heartContainer.appendChild(heart)
+    heartContainer.value.appendChild(heart)
   }
 
-  cacaContainer.value.appendChild(heartContainer)
-
   setTimeout(() => {
-    heartContainer.remove()
+    heartContainer.value.innerHTML = ''
   }, 4000)
 }
 
@@ -81,6 +78,8 @@ definePageMeta({
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin: 2rem;
+  position: relative; /* Asegúrate de que el contenido tenga posición relativa */
+  z-index: 1; /* Esto asegura que el contenido esté encima del contenedor de corazones */
 }
 
 .oso-image {
@@ -154,6 +153,7 @@ definePageMeta({
   height: 100%;
   pointer-events: none;
   overflow: hidden;
+  z-index: 0; /* Asegúrate de que el contenedor de corazones esté detrás del contenido */
 }
 
 .heart {
