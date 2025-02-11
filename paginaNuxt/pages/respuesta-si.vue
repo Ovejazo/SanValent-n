@@ -7,6 +7,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import osoImage from '@/assets/images/oso.jpg' // Importa la imagen directamente
 
 const heartContainer = ref(null)
 
@@ -15,9 +16,10 @@ const handleButtonClick = () => {
 }
 
 const createHearts = () => {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 1; i++) {
     const heartElement = document.createElement('img')
-    heartElement.src = '/images/oso.jpg' // Asegúrate de que la ruta sea correcta
+    heartElement.src = osoImage // Usa la imagen importada
+    heartElement.alt = 'Oso' // Añade un atributo alt para accesibilidad
     heartElement.classList.add('heart')
     heartElement.style.left = `${Math.random() * 100}%`
     heartElement.style.animationDelay = `${Math.random() * 2}s`
@@ -77,13 +79,14 @@ const createHearts = () => {
   position: absolute;
   bottom: 0;
   width: 50px; /* Ajusta el tamaño según sea necesario */
-  height: auto; /* Mantén la proporción de la imagen */
-  animation: float 4s ease-in infinite;
+  height: 50px; /* Asegura que mantenga un tamaño cuadrado */
+  object-fit: cover; /* Asegura que la imagen se recorte para ajustarse al contenedor */
+  animation: float 10s ease-in infinite; /* Ajusta la duración de la animación */
 }
 
 @keyframes float {
   0% {
-    transform: translateY(0);
+    transform: translateY(100vh);
     opacity: 1;
   }
   100% {
