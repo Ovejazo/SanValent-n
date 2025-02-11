@@ -1,19 +1,27 @@
 <template>
   <div class="caca-container" ref="cacaContainer">
     <h1>Página Caca</h1>
-    <div class="heart-container" ref="heartContainer"></div> <!-- Moved inside the content -->
+    <div class="corazones-container">
+      <div v-for="(corazon, index) in corazones" 
+           :key="index" 
+           class="corazon-wrapper"
+           :style="{ 
+             left: corazon.left, 
+             animationDelay: `${index * 0.2}s`,
+             '--altura-maxima': corazon.altura,
+             '--rotacion-inicial': corazon.rotationStart + 'deg',
+             '--rotacion-final': corazon.rotationEnd + 'deg'
+           }">
+        <Heart />
+      </div>
+    </div>
     <div class="caca-content">
-    
       <img src="/images/oso.jpg" alt="Oso" class="oso-image" />
       <p class="question">¿Quieres ser mi San Valentín?</p>
       <div class="answers">
-        <NuxtLink to="/respuesta-si" class="link-button">
-        Sí^^
-        </NuxtLink>
         <button @click="handleSiClick" class="answer yes">Sí</button>
         <button @click="handleNoClick" class="answer no">No</button>
       </div>
-
     </div>
     <NuxtLink to="/" class="back-button">
       Volver a inicio
@@ -26,7 +34,7 @@ import { ref } from 'vue'
 import Heart from '~/components/Heart.vue'
 
 const cacaContainer = ref(null)
-const heartContainer = ref(null)
+const corazones = ref([])
 
 const handleNoClick = () => {
   cacaContainer.value.classList.add('shake')
@@ -36,18 +44,22 @@ const handleNoClick = () => {
 }
 
 const handleSiClick = () => {
-  createHearts()
+  mostrarCorazones()
 }
 
-const createHearts = () => {
-  for (let i = 0; i < 30; i++) {
-    const heart = document.createElement('div')
-    heart.classList.add('heart')
-    heartContainer.value.appendChild(heart)
-  }
+const mostrarCorazones = () => {
+  // Crear 10 corazones con posiciones, rotaciones y alturas aleatorias
+  corazones.value = Array.from({ length: 10 }, (_, i) => ({
+    id: i,
+    left: `${10 + Math.random() * 80}%`,
+    altura: `${50 + Math.random() * 30}vh`,
+    rotationStart: Math.random() * 360,
+    rotationEnd: 720 + Math.random() * 360
+  }))
 
+  // Limpiar los corazones después de que termine la animación
   setTimeout(() => {
-    heartContainer.value.innerHTML = ''
+    corazones.value = []
   }, 4000)
 }
 
@@ -77,8 +89,8 @@ definePageMeta({
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin: 2rem;
-  position: relative; /* Asegúrate de que el contenido tenga posición relativa */
-  z-index: 1; /* Esto asegura que el contenido esté encima del contenedor de corazones */
+  position: relative;
+  z-index: 1;
 }
 
 .oso-image {
@@ -105,6 +117,8 @@ definePageMeta({
   color: white;
   font-size: 1.2rem;
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .answer.yes {
@@ -113,8 +127,6 @@ definePageMeta({
 
 .answer.no {
   background-color: #dc3545;
-  border: none;
-  cursor: pointer;
 }
 
 .answer:hover {
@@ -144,55 +156,75 @@ definePageMeta({
   100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
-.heart-container {
+.corazones-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  overflow: hidden;
-  z-index: 0; /* Asegúrate de que el contenedor de corazones esté detrás del contenido */
+  z-index: 0;
 }
 
-.heart {
+.corazon-wrapper {
   position: absolute;
-  bottom: 0;
-  width: 20px;
-  height: 20px;
-  background-color: red;
-  transform: rotate(45deg);
-  animation: float 4s ease-in infinite;
+  bottom: -100px;
+  opacity: 0;
+  animation: flotar 3s ease-in-out forwards;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
-.heart::before,
-.heart::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: red;
-}
-
-.heart::before {
-  top: -10px;
-  left: 0;
-}
-
-.heart::after {
-  top: 0;
-  left: -10px;
-}
-
-@keyframes float {
+@keyframes flotar {
   0% {
-    transform: translateY(0) rotate(45deg);
+    bottom: -100px;
+    opacity: 0;
+    transform: scale(0.5) rotate(var(--rotacion-inicial));
+  }
+  20% {
     opacity: 1;
+    transform: scale(1) rotate(calc(var(--rotacion-inicial) + 180deg));
+  }
+  50% {
+    bottom: var(--altura-maxima);
+    opacity: 1;
+    transform: scale(1.2) rotate(calc(var(--rotacion-inicial) + 360deg));
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1) rotate(calc(var(--rotacion-inicial) + 540deg));
   }
   100% {
-    transform: translateY(-100vh) rotate(45deg);
+    bottom: -100px;
     opacity: 0;
+    transform: scale(0.5) rotate(var(--rotacion-final));
+  }
+}
+
+:deep(.heart) {
+  width: 30px;
+  height: 30px;
+  animation: none !important;
+  background-color: #ff1493;
+}
+
+:deep(.heart::before),
+:deep(.heart::after) {
+  width: 30px;
+  height: 30px;
+  background-color: #ff1493;
+}
+
+:deep(.heart) {
+  filter: brightness(1.2);
+  animation: brilloAleatorio 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes brilloAleatorio {
+  0% {
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  100% {
+    filter: brightness(1.4) hue-rotate(45deg);
   }
 }
 
@@ -204,10 +236,26 @@ definePageMeta({
   text-decoration: none;
   border-radius: 25px;
   transition: all 0.3s ease;
+  z-index: 1;
 }
 
 .back-button:hover {
   background-color: #ff1493;
   transform: scale(1.05);
+}
+
+.link-button {
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.link-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 </style>

@@ -1,35 +1,43 @@
 <template>
   <div class="container">
-    <button @click="mostrarOsos" class="button">Mostrar Osos</button>
-    <div class="osos-container">
-      <img v-for="(oso, index) in osos" 
+    <button @click="mostrarCorazones" class="button">Mostrar Corazones</button>
+    <div class="corazones-container">
+      <div v-for="(corazon, index) in corazones" 
            :key="index" 
-           :src="osoImage" 
-           class="oso" 
-           :style="{ left: oso.left, animationDelay: `${index * 0.3}s` }"
-           alt="Oso" />
+           class="corazon-wrapper"
+           :style="{ 
+             left: corazon.left, 
+             animationDelay: `${index * 0.2}s`,
+             '--altura-maxima': corazon.altura,
+             '--rotacion-inicial': corazon.rotationStart + 'deg',
+             '--rotacion-final': corazon.rotationEnd + 'deg'
+           }">
+        <Heart />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import osoImage from '@/assets/images/oso.jpg'
+import Heart from '../components/Heart.vue'
 
-const osos = ref([])
+const corazones = ref([])
 
-const mostrarOsos = () => {
-  // Crear 7 osos con posiciones horizontales aleatorias
-  osos.value = Array.from({ length: 7 }, (_, i) => ({
+const mostrarCorazones = () => {
+  
+  corazones.value = Array.from({ length: 20 }, (_, i) => ({
     id: i,
-    // Posición horizontal aleatoria entre 10% y 90% del ancho
-    left: `${10 + Math.random() * 80}%`
+    left: `${10 + Math.random() * 80}%`,
+    altura: `${50 + Math.random() * 30}vh`,
+    rotationStart: Math.random() * 360,
+    rotationEnd: 720 + Math.random() * 360
   }))
 
-  // Limpiar los osos después de que termine la animación
+  // Limpiar los corazones después de que termine la animación
   setTimeout(() => {
-    osos.value = []
-  }, 3000) // 3 segundos (duración de animación + último delay)
+    corazones.value = []
+  }, 8000)
 }
 </script>
 
@@ -55,15 +63,19 @@ const mostrarOsos = () => {
   cursor: pointer;
   z-index: 2;
   margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
 
 .button:hover {
   background-color: #ff1493;
   transform: scale(1.05);
-  transition: all 0.3s ease;
 }
 
-.osos-container {
+.button:active {
+  transform: scale(0.95);
+}
+
+.corazones-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -72,37 +84,66 @@ const mostrarOsos = () => {
   pointer-events: none;
 }
 
-.oso {
+.corazon-wrapper {
   position: absolute;
-  bottom: -100px; /* Empieza desde abajo de la pantalla */
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+  bottom: -100px;
   opacity: 0;
-  animation: flotar 0.75s ease-out forwards; /* Duración de la animación ajustada a 2 segundos */
-  border-radius: 50%; /* Hace las imágenes redondas */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Añade una sombra suave */
+  animation: flotar 2s ease-in-out forwards;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
 @keyframes flotar {
   0% {
     bottom: -100px;
     opacity: 0;
-    transform: scale(0.5);
+    transform: scale(0.5) rotate(var(--rotacion-inicial));
   }
-  10% {
+  20% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(calc(var(--rotacion-inicial) + 180deg));
   }
   50% {
-    bottom: 50vh;
+    bottom: var(--altura-maxima);
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.2) rotate(calc(var(--rotacion-inicial) + 360deg));
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1) rotate(calc(var(--rotacion-inicial) + 540deg));
   }
   100% {
     bottom: -100px;
     opacity: 0;
-    transform: scale(0.5);
+    transform: scale(0.5) rotate(var(--rotacion-final));
+  }
+}
+
+
+:deep(.heart) {
+  width: 30px;
+  height: 30px;
+  animation: none !important; 
+  background-color: #ff1493;
+}
+
+:deep(.heart::before),
+:deep(.heart::after) {
+  width: 30px;
+  height: 30px;
+  background-color: #ff1493;
+}
+
+:deep(.heart) {
+  filter: brightness(1.2);
+  animation: brilloAleatorio 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes brilloAleatorio {
+  0% {
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  100% {
+    filter: brightness(1.4) hue-rotate(45deg);
   }
 }
 </style>
