@@ -1,34 +1,35 @@
 <template>
   <div class="container">
-    <button @click="handleButtonClick" class="button">Mostrar Osos</button>
-    <div class="heart-container" ref="heartContainer"></div>
+    <button @click="mostrarOsos" class="button">Mostrar Osos</button>
+    <div class="osos-container">
+      <img v-for="(oso, index) in osos" 
+           :key="index" 
+           :src="osoImage" 
+           class="oso" 
+           :style="{ left: oso.left, animationDelay: `${index * 0.3}s` }"
+           alt="Oso" />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import osoImage from '@/assets/images/oso.jpg' // Importa la imagen directamente
+import osoImage from '@/assets/images/oso.jpg'
 
-const heartContainer = ref(null)
+const osos = ref([])
 
-const handleButtonClick = () => {
-  createHearts()
-}
+const mostrarOsos = () => {
+  // Crear 7 osos con posiciones horizontales aleatorias
+  osos.value = Array.from({ length: 7 }, (_, i) => ({
+    id: i,
+    // Posición horizontal aleatoria entre 10% y 90% del ancho
+    left: `${10 + Math.random() * 80}%`
+  }))
 
-const createHearts = () => {
-  for (let i = 0; i < 1; i++) {
-    const heartElement = document.createElement('img')
-    heartElement.src = osoImage // Usa la imagen importada
-    heartElement.alt = 'Oso' // Añade un atributo alt para accesibilidad
-    heartElement.classList.add('heart')
-    heartElement.style.left = `${Math.random() * 100}%`
-    heartElement.style.animationDelay = `${Math.random() * 2}s`
-    heartContainer.value.appendChild(heartElement)
-  }
-
+  // Limpiar los osos después de que termine la animación
   setTimeout(() => {
-    heartContainer.value.innerHTML = ''
-  }, 4000)
+    osos.value = []
+  }, 3000) // 3 segundos (duración de animación + último delay)
 }
 </script>
 
@@ -40,58 +41,68 @@ const createHearts = () => {
   align-items: center;
   justify-content: center;
   background-color: #fff;
-  position: relative;
   overflow: hidden;
+  position: relative;
 }
 
 .button {
   padding: 1rem 2rem;
   border-radius: 25px;
-  text-decoration: none;
   background-color: #ff69b4;
   color: white;
   font-size: 1.2rem;
-  transition: all 0.3s ease;
   border: none;
   cursor: pointer;
+  z-index: 2;
+  margin-bottom: 20px;
 }
 
 .button:hover {
   background-color: #ff1493;
   transform: scale(1.05);
+  transition: all 0.3s ease;
 }
 
-.button:active {
-  transform: scale(0.98);
-}
-
-.heart-container {
+.osos-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  overflow: hidden;
 }
 
-.heart {
+.oso {
   position: absolute;
-  bottom: 0;
-  width: 50px; /* Ajusta el tamaño según sea necesario */
-  height: 50px; /* Asegura que mantenga un tamaño cuadrado */
-  object-fit: cover; /* Asegura que la imagen se recorte para ajustarse al contenedor */
-  animation: float 10s ease-in infinite; /* Ajusta la duración de la animación */
+  bottom: -100px; /* Empieza desde abajo de la pantalla */
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  opacity: 0;
+  animation: flotar 0.75s ease-out forwards; /* Duración de la animación ajustada a 2 segundos */
+  border-radius: 50%; /* Hace las imágenes redondas */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Añade una sombra suave */
 }
 
-@keyframes float {
+@keyframes flotar {
   0% {
-    transform: translateY(100vh);
+    bottom: -100px;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  10% {
     opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    bottom: 50vh;
+    opacity: 1;
+    transform: scale(1);
   }
   100% {
-    transform: translateY(-100vh);
+    bottom: -100px;
     opacity: 0;
+    transform: scale(0.5);
   }
 }
 </style>
