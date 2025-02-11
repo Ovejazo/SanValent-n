@@ -1,33 +1,34 @@
 <template>
   <div class="caca-container" ref="cacaContainer">
-    <h1>Caca</h1>
+    <h1>Página Caca</h1>
+    <div class="heart-container" ref="heartContainer"></div> <!-- Moved inside the content -->
     <div class="caca-content">
+    
       <img src="/images/oso.jpg" alt="Oso" class="oso-image" />
       <p class="question">¿Quieres ser mi San Valentín?</p>
       <div class="answers">
+        <NuxtLink to="/respuesta-si" class="link-button">
+        Sí^^
+        </NuxtLink>
         <button @click="handleSiClick" class="answer yes">Sí</button>
         <button @click="handleNoClick" class="answer no">No</button>
       </div>
+
     </div>
     <NuxtLink to="/" class="back-button">
       Volver a inicio
     </NuxtLink>
-    <div class="heart-container" ref="heartContainer"></div> <!-- Asegúrate de que este div esté aquí -->
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-
-// Cambia esta URL a la del audio que quieras usar
-const growlAudioURL = 'https://www.soundjay.com/animal/grizzly-bear-growl-01.mp3'
-const growlAudio = new Audio(growlAudioURL)
+import Heart from '~/components/Heart.vue'
 
 const cacaContainer = ref(null)
 const heartContainer = ref(null)
 
 const handleNoClick = () => {
-  growlAudio.play()
   cacaContainer.value.classList.add('shake')
   setTimeout(() => {
     cacaContainer.value.classList.remove('shake')
@@ -42,8 +43,6 @@ const createHearts = () => {
   for (let i = 0; i < 30; i++) {
     const heart = document.createElement('div')
     heart.classList.add('heart')
-    heart.style.left = `${Math.random() * 100}%`
-    heart.style.animationDelay = `${Math.random() * 2}s`
     heartContainer.value.appendChild(heart)
   }
 
